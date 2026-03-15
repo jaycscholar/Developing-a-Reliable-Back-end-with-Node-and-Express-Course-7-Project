@@ -1,9 +1,11 @@
+require("dotenv").config({ path: require("path").resolve(__dirname, ".env") });
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
+const mongoose = require("mongoose");
 const employeeRoutes = require("./routes/employees");
 
 const app = express();
@@ -115,6 +117,19 @@ app.get("/", (req, res) => {
   res.json({ message: "EMS API is running" });
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on http://0.0.0.0:${PORT}`);
-});
+async function startServer() {
+  try {
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) throw new Error("MONGODB_URI is not set in .env");
+    await mongoose.connect(mongoUri);
+    console.log("MongoDB connected");
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server is running on http://0.0.0.0:${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err.message);
+    process.exit(1);
+  }
+}
+
+startServer();

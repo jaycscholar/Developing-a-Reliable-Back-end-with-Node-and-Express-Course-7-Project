@@ -1,26 +1,13 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const { v4: uuidv4 } = require("uuid");
+const mongoose = require("mongoose");
+const Employee = require("../models/Employee");
 
 const router = express.Router();
-const dataPath = path.join(__dirname, "..", "data", "employees.json");
-
-// Helper: read employees from JSON file
-function readEmployees() {
-  const raw = fs.readFileSync(dataPath, "utf-8");
-  return JSON.parse(raw);
-}
-
-// Helper: write employees to JSON file
-function writeEmployees(employees) {
-  fs.writeFileSync(dataPath, JSON.stringify(employees, null, 2));
-}
 
 // GET /api/employees — retrieve all employees
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const employees = readEmployees();
+    const employees = await Employee.find().sort({ createdAt: -1 });
     res.json(employees);
   } catch (err) {
     res.status(500).json({ error: "Failed to read employee data" });
@@ -28,13 +15,13 @@ router.get("/", (req, res) => {
 });
 
 // GET /api/employees/:id — retrieve a single employee
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ error: "Employee not found" });
+  }
   try {
-    const employees = readEmployees();
-    const employee = employees.find((e) => e.id === req.params.id);
-    if (!employee) {
-      return res.status(404).json({ error: "Employee not found" });
-    }
+    const employee = await Employee.findById(req.params.id);
+    if (!employee) return res.status(404).json({ error: "Employee not found" });
     res.json(employee);
   } catch (err) {
     res.status(500).json({ error: "Failed to read employee data" });
@@ -42,7 +29,7 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/employees — create a new employee
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { firstName, lastName, email, department, salary, imageUrl } = req.body;
 
   if (!firstName || !lastName || !email) {
@@ -52,26 +39,22 @@ router.post("/", (req, res) => {
   }
 
   try {
-    const employees = readEmployees();
-    const newEmployee = {
-      id: uuidv4(),
+    const created = await Employee.create({
       firstName,
       lastName,
       email,
       department: department || "",
-      salary: salary || 0,
+      salary: Number(salary) || 0,
       imageUrl: imageUrl || "",
-    };
-    employees.push(newEmployee);
-    writeEmployees(employees);
-    res.status(201).json(newEmployee);
+    });
+    res.status(201).json(created);
   } catch (err) {
     res.status(500).json({ error: "Failed to save employee" });
   }
 });
 
 // PUT /api/employees/:id — update an existing employee
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const { firstName, lastName, email, department, salary, imageUrl } = req.body;
 
   if (!firstName || !lastName || !email) {
@@ -80,40 +63,38 @@ router.put("/:id", (req, res) => {
       .json({ error: "firstName, lastName, and email are required" });
   }
 
-  try {
-    const employees = readEmployees();
-    const index = employees.findIndex((e) => e.id === req.params.id);
-    if (index === -1) {
-      return res.status(404).json({ error: "Employee not found" });
-    }
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ error: "Employee not found" });
+  }
 
-    employees[index] = {
-      ...employees[index],
-      firstName,
-      lastName,
-      email,
-      department: department || "",
-      salary: salary || 0,
-      imageUrl: imageUrl || "",
-    };
-    writeEmployees(employees);
-    res.json(employees[index]);
+  try {
+    const updated = await Employee.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstName,
+        lastName,
+        email,
+        department: department || "",
+        salary: Number(salary) || 0,
+        imageUrl: imageUrl || "",
+      },
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ error: "Employee not found" });
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ error: "Failed to update employee" });
   }
 });
 
 // DELETE /api/employees/:id — delete an employee
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ error: "Employee not found" });
+  }
   try {
-    const employees = readEmployees();
-    const index = employees.findIndex((e) => e.id === req.params.id);
-    if (index === -1) {
-      return res.status(404).json({ error: "Employee not found" });
-    }
-
-    const deleted = employees.splice(index, 1)[0];
-    writeEmployees(employees);
+    const deleted = await Employee.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "Employee not found" });
     res.json(deleted);
   } catch (err) {
     res.status(500).json({ error: "Failed to delete employee" });

@@ -9,8 +9,9 @@ function runCommand(command, args, label) {
       ? `${command}.cmd`
       : command;
 
+  // On Windows, .cmd files (npm.cmd, npx.cmd) require shell:true to spawn correctly
   const child = spawn(normalizedCommand, args, {
-    shell: false,
+    shell: process.platform === "win32",
     stdio: "inherit",
   });
 

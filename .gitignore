@@ -8,6 +8,10 @@ client/dist/
 # Runtime uploads
 backend/uploads/
 
+# Environment variables — never commit secrets
+.env
+**/.env
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
