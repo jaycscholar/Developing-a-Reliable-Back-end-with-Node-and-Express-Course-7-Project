@@ -8,7 +8,7 @@ A simple fullstack application for managing employee records, built with Node.js
 
 | Layer    | Technology                        |
 | -------- | --------------------------------- |
-| Backend  | Node.js, Express.js               |
+| Backend  | Node.js, Express.js, Pug, cookie-parser, Multer |
 | Frontend | React (Vite)                      |
 | Storage  | JSON file (`data/employees.json`) |
 | Deploy   | Vercel (frontend only for now)     |
@@ -47,7 +47,7 @@ course-end-project-node/
 
 ### 1. Project Setup
 - Initialize a Node.js project with `npm init`
-- Install dependencies: `express`, `cors`, `uuid`
+- Install dependencies: `express`, `cors`, `uuid`, `pug`, `cookie-parser`
 - Add a `dev` script using `node --watch` for local development
 
 ### 2. Data Storage
@@ -84,6 +84,16 @@ course-end-project-node/
 ### 4. Server Entry Point (`server.js`)
 - Create the Express app, apply middleware (CORS, JSON parsing), and mount routes
 - Listen on port `3000` (or `process.env.PORT`)
+
+### 5. Dynamic HTML + Cookies
+- Configure Pug as the view engine and render a dynamic page at `/web`
+- Use `cookie-parser` to read and write cookies (e.g., visit count and last visit time)
+- Keep API routes under `/api/*` and server-rendered page routes separate
+
+### 6. File Uploads (Multer)
+- Install and configure Multer for `multipart/form-data` uploads
+- Save uploaded files in a backend folder (e.g., `backend/uploads`)
+- Serve uploaded files statically and show the uploaded file link after upload
 
 ---
 

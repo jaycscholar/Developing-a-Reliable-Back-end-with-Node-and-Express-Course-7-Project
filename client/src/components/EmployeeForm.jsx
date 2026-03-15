@@ -11,6 +11,8 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
     imageUrl: "",
   });
   const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (employeeToEdit) {
@@ -22,13 +24,20 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
         salary: employeeToEdit.salary,
         imageUrl: employeeToEdit.imageUrl || "",
       });
+      setSelectedImage(null);
     } else {
       setFormData({ firstName: "", lastName: "", email: "", department: "", salary: "", imageUrl: "" });
+      setSelectedImage(null);
     }
   }, [employeeToEdit]);
 
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  function handleImageChange(e) {
+    const file = e.target.files?.[0] || null;
+    setSelectedImage(file);
   }
 
   async function handleSubmit(e) {
@@ -46,12 +55,34 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
       return;
     }
 
-    const payload = {
-      ...formData,
-      salary: Number(formData.salary) || 0,
-    };
-
     try {
+      let imageUrl = formData.imageUrl;
+
+      if (selectedImage) {
+        setIsUploading(true);
+        const uploadData = new FormData();
+        uploadData.append("image", selectedImage);
+
+        const uploadRes = await fetch("/api/uploads", {
+          method: "POST",
+          body: uploadData,
+        });
+
+        if (!uploadRes.ok) {
+          const uploadErr = await uploadRes.json();
+          throw new Error(uploadErr.error || "Image upload failed");
+        }
+
+        const uploaded = await uploadRes.json();
+        imageUrl = uploaded.imageUrl;
+      }
+
+      const payload = {
+        ...formData,
+        imageUrl,
+        salary: Number(formData.salary) || 0,
+      };
+
       const isEdit = !!employeeToEdit;
       const url = isEdit
         ? `/api/employees/${employeeToEdit.id}`
@@ -72,6 +103,8 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
       onSave();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsUploading(false);
     }
   }
 
@@ -105,12 +138,20 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
           <input name="salary" type="number" value={formData.salary} onChange={handleChange} />
         </label>
         <label>
-          Image URL
-          <input name="imageUrl" placeholder="https://..." value={formData.imageUrl} onChange={handleChange} />
+          Image URL (optional)
+          <input name="imageUrl" placeholder="/uploads/photo.jpg or https://..." value={formData.imageUrl} onChange={handleChange} />
+        </label>
+      </div>
+      <div className="form-row">
+        <label>
+          Upload Image (optional)
+          <input type="file" accept="image/*" onChange={handleImageChange} />
         </label>
       </div>
       <div className="form-actions">
-        <button type="submit">{employeeToEdit ? "Update" : "Create"}</button>
+        <button type="submit" disabled={isUploading}>
+          {isUploading ? "Uploading..." : employeeToEdit ? "Update" : "Create"}
+        </button>
         <button type="button" onClick={onCancel}>Cancel</button>
       </div>
     </form>

@@ -5,6 +5,9 @@ node_modules/
 # Build outputs
 client/dist/
 
+# Runtime uploads
+backend/uploads/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

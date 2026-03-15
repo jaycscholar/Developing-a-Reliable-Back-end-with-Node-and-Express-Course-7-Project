@@ -34,5 +34,14 @@
     "department": "Licensing",
     "salary": 19999,
     "imageUrl": "/images/mercy.jpg"
+  },
+  {
+    "id": "060b0660-0525-48db-b82d-7ffb9ee7e39f",
+    "firstName": "Tony",
+    "lastName": "Martinez",
+    "email": "reyezsj@gmail.com",
+    "department": "Cats",
+    "salary": 8000,
+    "imageUrl": "/uploads/1773563707992-Person1.jpg"
   }
 ]

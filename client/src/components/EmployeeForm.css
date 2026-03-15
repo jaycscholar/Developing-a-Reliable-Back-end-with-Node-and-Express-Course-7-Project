@@ -72,6 +72,11 @@
   background-color: #0b2a4a;
 }
 
+.form-actions button[type="submit"]:disabled {
+  background-color: #6b89ad;
+  cursor: not-allowed;
+}
+
 .form-actions button[type="button"] {
   background-color: #ddd;
   color: #333;

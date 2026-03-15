@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    style.
+      body { font-family: Arial, sans-serif; margin: 2rem; background: #f7f7f7; color: #222; }
+      .card { max-width: 560px; background: #fff; padding: 1.25rem; border-radius: 8px; border: 1px solid #ddd; }
+      h1 { margin-top: 0; }
+      p { margin: 0.5rem 0; }
+      form { margin-top: 1rem; display: grid; gap: 0.6rem; }
+      input[type="file"] { padding: 0.35rem; }
+      button { width: fit-content; padding: 0.45rem 0.8rem; }
+      .status { font-weight: 600; }
+  body
+    .card
+      h1= heading
+      p This is a server-rendered page using Pug.
+      p Visit count stored in cookie: #{visits}
+      p Last visit: #{lastVisit}
+      p
+        a(href="/api/employees") View employees API
+      form(action="/web/upload" method="POST" enctype="multipart/form-data")
+        label(for="uploadFile") Upload a file to server (Multer)
+        input#uploadFile(type="file" name="uploadFile" required)
+        button(type="submit") Upload
+      if uploadMessage
+        p.status= uploadMessage
+      if uploadUrl
+        p
+          | Uploaded file: #{uploadName} - 
+          a(href=uploadUrl target="_blank") Open file
