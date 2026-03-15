@@ -30,11 +30,64 @@
   background-color: #f5f5f5;
 }
 
+.avatar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: zoom-in;
+}
+
 .emp-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.avatar-button:hover .emp-avatar {
+  border-color: #0f3460;
+}
+
+.image-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.image-modal-preview {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 10px;
+  border: 3px solid #fff;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #e94560;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .actions {

@@ -4,7 +4,7 @@
     "firstName": "Jane",
     "lastName": "Doe",
     "email": "jane.doe@example.com",
-    "department": "Engineering",
+    "department": "Cypress Dept 1773564982370",
     "salary": 115000,
     "imageUrl": "/images/jane.jpg"
   },
@@ -15,7 +15,7 @@
     "email": "john.smith@example.com",
     "department": "Marketing",
     "salary": 72000,
-    "imageUrl": "/images/john.jpg"
+    "imageUrl": "/uploads/1773564347732-Person2.jpg"
   },
   {
     "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
