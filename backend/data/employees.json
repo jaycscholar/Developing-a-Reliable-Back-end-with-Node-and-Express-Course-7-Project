@@ -1,0 +1,38 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jane.doe@example.com",
+    "department": "Engineering",
+    "salary": 115000,
+    "imageUrl": "/images/jane.jpg"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "firstName": "John",
+    "lastName": "Smith",
+    "email": "john.smith@example.com",
+    "department": "Marketing",
+    "salary": 72000,
+    "imageUrl": "/images/john.jpg"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "email": "alice.johnson@example.com",
+    "department": "Human Resources",
+    "salary": 68000,
+    "imageUrl": "/images/alice.jpg"
+  },
+  {
+    "id": "14554aec-d35f-496f-ac1a-2241f4674670",
+    "firstName": "Mercy",
+    "lastName": "Barter",
+    "email": "mery.barter@example.com",
+    "department": "Licensing",
+    "salary": 19999,
+    "imageUrl": "/images/mercy.jpg"
+  }
+]
