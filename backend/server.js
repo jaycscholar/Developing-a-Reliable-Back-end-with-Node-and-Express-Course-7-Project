@@ -162,13 +162,14 @@ async function startServer() {
   try {
     await ensureMongoConnection();
     console.log("MongoDB connected");
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server is running on http://0.0.0.0:${PORT}`);
-    });
   } catch (err) {
-    console.error("Failed to start server:", err.message);
-    process.exit(1);
+    console.error("MongoDB initial connection failed:", err.message);
+    console.error("Server will still start; API routes will return database errors until MongoDB is reachable.");
   }
+
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on http://0.0.0.0:${PORT}`);
+  });
 }
 
 if (require.main === module) {

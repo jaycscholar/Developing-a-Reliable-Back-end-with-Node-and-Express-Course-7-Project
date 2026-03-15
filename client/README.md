@@ -21,8 +21,9 @@ Two separate terminals:
 
 Terminal 1 — Backend:
 
+cd backend
 
-cd backendnpm run dev
+npm run dev
 Terminal 2 — Frontend:
 
 
