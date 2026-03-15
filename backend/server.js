@@ -13,6 +13,12 @@ const PORT = process.env.PORT || 3000;
 const runningOnServerless = Boolean(process.env.VERCEL);
 const uploadsDir = runningOnServerless ? path.join("/tmp", "uploads") : path.join(__dirname, "uploads");
 let mongoConnectPromise = null;
+const mongoConnectOptions = {
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 5000,
+  socketTimeoutMS: 10000,
+  maxPoolSize: 5,
+};
 
 async function ensureMongoConnection() {
   if (mongoose.connection.readyState === 1) {
@@ -25,7 +31,7 @@ async function ensureMongoConnection() {
       throw new Error("MONGODB_URI is not set in environment");
     }
 
-    mongoConnectPromise = mongoose.connect(mongoUri).catch((err) => {
+    mongoConnectPromise = mongoose.connect(mongoUri, mongoConnectOptions).catch((err) => {
       mongoConnectPromise = null;
       throw err;
     });
