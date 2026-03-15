@@ -10,7 +10,8 @@ const employeeRoutes = require("./routes/employees");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const uploadsDir = path.join(__dirname, "uploads");
+const runningOnServerless = Boolean(process.env.VERCEL);
+const uploadsDir = runningOnServerless ? path.join("/tmp", "uploads") : path.join(__dirname, "uploads");
 let mongoConnectPromise = null;
 
 async function ensureMongoConnection() {
@@ -33,8 +34,13 @@ async function ensureMongoConnection() {
   await mongoConnectPromise;
 }
 
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  // Avoid crashing function startup on read-only filesystems.
+  console.error("Failed to initialize uploads directory:", err.message);
 }
 
 const storage = multer.diskStorage({
