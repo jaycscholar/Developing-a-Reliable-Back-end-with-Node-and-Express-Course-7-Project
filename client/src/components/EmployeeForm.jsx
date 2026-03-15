@@ -1,6 +1,22 @@
 import { useState, useEffect } from "react";
 import "./EmployeeForm.css";
 
+async function parseApiResponse(response, fallbackMessage) {
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const body = isJson ? await response.json() : await response.text();
+
+  if (!response.ok) {
+    const message =
+      typeof body === "string"
+        ? body
+        : body?.error || fallbackMessage;
+    throw new Error(message || fallbackMessage);
+  }
+
+  return body;
+}
+
 function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -68,12 +84,7 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
           body: uploadData,
         });
 
-        if (!uploadRes.ok) {
-          const uploadErr = await uploadRes.json();
-          throw new Error(uploadErr.error || "Image upload failed");
-        }
-
-        const uploaded = await uploadRes.json();
+        const uploaded = await parseApiResponse(uploadRes, "Image upload failed");
         imageUrl = uploaded.imageUrl;
       }
 
@@ -95,10 +106,7 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Something went wrong");
-      }
+      await parseApiResponse(res, "Something went wrong");
 
       onSave();
     } catch (err) {

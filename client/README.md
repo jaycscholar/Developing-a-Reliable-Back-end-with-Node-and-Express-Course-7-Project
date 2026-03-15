@@ -28,3 +28,10 @@ Terminal 2 — Frontend:
 
 cd clientnpm run dev
 Backend runs on http://localhost:3000, frontend on http://localhost:5173. Open the frontend URL in your browse
+
+
+---
+To run cypress
+
+cd client
+npm run cy:all
