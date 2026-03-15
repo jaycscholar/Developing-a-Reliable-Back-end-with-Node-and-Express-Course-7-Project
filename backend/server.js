@@ -11,6 +11,27 @@ const employeeRoutes = require("./routes/employees");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const uploadsDir = path.join(__dirname, "uploads");
+let mongoConnectPromise = null;
+
+async function ensureMongoConnection() {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  if (!mongoConnectPromise) {
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) {
+      throw new Error("MONGODB_URI is not set in environment");
+    }
+
+    mongoConnectPromise = mongoose.connect(mongoUri).catch((err) => {
+      mongoConnectPromise = null;
+      throw err;
+    });
+  }
+
+  await mongoConnectPromise;
+}
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -41,6 +62,14 @@ const imageUpload = multer({
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(async (req, res, next) => {
+  try {
+    await ensureMongoConnection();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -119,9 +148,7 @@ app.get("/", (req, res) => {
 
 async function startServer() {
   try {
-    const mongoUri = process.env.MONGODB_URI;
-    if (!mongoUri) throw new Error("MONGODB_URI is not set in .env");
-    await mongoose.connect(mongoUri);
+    await ensureMongoConnection();
     console.log("MongoDB connected");
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server is running on http://0.0.0.0:${PORT}`);
@@ -132,4 +159,8 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = app;
