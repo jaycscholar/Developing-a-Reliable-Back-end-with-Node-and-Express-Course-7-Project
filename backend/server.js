@@ -6,7 +6,14 @@ const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 const mongoose = require("mongoose");
+const cloudinary = require("cloudinary").v2;
 const employeeRoutes = require("./routes/employees");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,7 +67,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const imageUpload = multer({
-  storage,
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype && file.mimetype.startsWith("image/")) {
       cb(null, true);
@@ -93,15 +101,31 @@ app.use("/uploads", express.static(uploadsDir));
 // Routes
 app.use("/api/employees", employeeRoutes);
 
-app.post("/api/uploads", imageUpload.single("image"), (req, res) => {
+app.post("/api/uploads", imageUpload.single("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  return res.status(201).json({
-    imageUrl: `/uploads/${req.file.filename}`,
-    originalName: req.file.originalname,
-  });
+  try {
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "ems-employees" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+
+    return res.status(201).json({
+      imageUrl: result.secure_url,
+      originalName: req.file.originalname,
+    });
+  } catch (err) {
+    console.error("Cloudinary upload failed:", err.message);
+    return res.status(500).json({ error: "Image upload failed" });
+  }
 });
 
 // Server-rendered page demo (Pug + cookie-parser)
