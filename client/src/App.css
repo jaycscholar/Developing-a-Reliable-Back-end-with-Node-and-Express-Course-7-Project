@@ -26,3 +26,14 @@ body {
     padding: 0 0.75rem;
   }
 }
+
+.auth-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  font-size: 1.1rem;
+}
+
+.auth-message a {
+  color: #e94560;
+  font-weight: 600;
+}

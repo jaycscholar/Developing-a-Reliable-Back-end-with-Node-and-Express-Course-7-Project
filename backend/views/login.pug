@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    style.
+      body { font-family: Arial, sans-serif; margin: 2rem; background: #f7f7f7; color: #222; display: flex; justify-content: center; }
+      .card { max-width: 360px; width: 100%; background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid #ddd; margin-top: 4rem; }
+      h1 { margin-top: 0; text-align: center; font-size: 1.4rem; }
+      form { display: grid; gap: 0.8rem; }
+      label { font-weight: 600; font-size: 0.9rem; }
+      input[type="text"], input[type="password"] { width: 100%; padding: 0.45rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+      button { padding: 0.5rem; font-size: 1rem; cursor: pointer; }
+      .error { color: #c00; font-weight: 600; text-align: center; }
+  body
+    .card
+      h1 Admin Login
+      if error
+        p.error= error
+      form(action="/admin/login" method="POST")
+        label(for="username") Username
+        input#username(type="text" name="username" required autofocus)
+        label(for="password") Password
+        input#password(type="password" name="password" required)
+        button(type="submit") Log In

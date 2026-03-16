@@ -25,6 +25,11 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
     department: "",
     salary: "",
     imageUrl: "",
+    username: "",
+    password: "",
+    phone: "",
+    address: "",
+    onboardingDate: "",
   });
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -39,10 +44,15 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
         department: employeeToEdit.department,
         salary: employeeToEdit.salary,
         imageUrl: employeeToEdit.imageUrl || "",
+        username: employeeToEdit.username || "",
+        password: "",
+        phone: employeeToEdit.phone || "",
+        address: employeeToEdit.address || "",
+        onboardingDate: employeeToEdit.onboardingDate || "",
       });
       setSelectedImage(null);
     } else {
-      setFormData({ firstName: "", lastName: "", email: "", department: "", salary: "", imageUrl: "" });
+      setFormData({ firstName: "", lastName: "", email: "", department: "", salary: "", imageUrl: "", username: "", password: "", phone: "", address: "", onboardingDate: "" });
       setSelectedImage(null);
     }
   }, [employeeToEdit]);
@@ -93,6 +103,9 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
         imageUrl,
         salary: Number(formData.salary) || 0,
       };
+
+      // Don't send empty password on edit (keeps existing)
+      if (!payload.password) delete payload.password;
 
       const isEdit = !!employeeToEdit;
       const url = isEdit
@@ -154,6 +167,32 @@ function EmployeeForm({ employeeToEdit, onSave, onCancel }) {
         <label>
           Upload Image (optional)
           <input type="file" accept="image/*" onChange={handleImageChange} />
+        </label>
+      </div>
+      <div className="form-row">
+        <label>
+          Username
+          <input name="username" value={formData.username} onChange={handleChange} placeholder="Employee login username" />
+        </label>
+        <label>
+          Password {employeeToEdit ? "(leave blank to keep current)" : ""}
+          <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder={employeeToEdit ? "Leave blank to keep" : "Employee login password"} />
+        </label>
+      </div>
+      <div className="form-row">
+        <label>
+          Phone
+          <input name="phone" value={formData.phone} onChange={handleChange} placeholder="555-123-4567" />
+        </label>
+        <label>
+          Onboarding Date
+          <input name="onboardingDate" type="date" value={formData.onboardingDate} onChange={handleChange} />
+        </label>
+      </div>
+      <div className="form-row">
+        <label className="full-width">
+          Home Address
+          <input name="address" value={formData.address} onChange={handleChange} placeholder="123 Main St, City, State ZIP" />
         </label>
       </div>
       <div className="form-actions">

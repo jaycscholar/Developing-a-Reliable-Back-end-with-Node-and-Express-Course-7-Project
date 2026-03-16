@@ -32,8 +32,10 @@ function EmployeeList({ employees, onEdit, onDelete }) {
             <th></th>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone</th>
             <th>Department</th>
             <th>Salary</th>
+            <th>Onboarding</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -61,8 +63,10 @@ function EmployeeList({ employees, onEdit, onDelete }) {
               </td>
               <td data-label="Name">{emp.firstName} {emp.lastName}</td>
               <td data-label="Email">{emp.email}</td>
+              <td data-label="Phone">{emp.phone || "—"}</td>
               <td data-label="Department">{emp.department}</td>
               <td data-label="Salary">${Number(emp.salary).toLocaleString()}</td>
+              <td data-label="Onboarding">{emp.onboardingDate || "—"}</td>
               <td className="actions">
                 <button className="btn-edit" onClick={() => onEdit(emp)}>Edit</button>
                 <button className="btn-delete" onClick={() => onDelete(emp.id)}>Delete</button>

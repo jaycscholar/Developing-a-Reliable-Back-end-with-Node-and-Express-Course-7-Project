@@ -21,6 +21,10 @@ html(lang="en")
       p Last visit: #{lastVisit}
       p
         a(href="/api/employees") View employees API
+        |  &middot; 
+        a(href="/admin") Admin Panel
+        |  &middot; 
+        a(href="/admin/logout") Logout
       form(action="/web/upload" method="POST" enctype="multipart/form-data")
         label(for="uploadFile") Upload a file to server (Multer)
         input#uploadFile(type="file" name="uploadFile" required)
