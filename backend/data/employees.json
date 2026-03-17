@@ -9,7 +9,7 @@
     "phone": "555-101-2020",
     "address": "123 Elm St, West Lafayette, IN 47906",
     "onboardingDate": "2023-06-15",
-    "department": "Cypress Dept 1773633686643",
+    "department": "Cypress Dept 1773708480716",
     "salary": 115000,
     "imageUrl": "/images/jane.jpg"
   },
@@ -107,6 +107,20 @@
     "phone": "",
     "address": "",
     "onboardingDate": "2026-03-16",
+    "department": "",
+    "salary": 0,
+    "imageUrl": ""
+  },
+  {
+    "id": "b8689582-88e9-46bd-b37d-7165307339b4",
+    "firstName": "CyFirst",
+    "lastName": "CyLast",
+    "username": "cyuser1773708473453",
+    "password": "cypass123",
+    "email": "cy1773708473453@test.com",
+    "phone": "",
+    "address": "",
+    "onboardingDate": "2026-03-17",
     "department": "",
     "salary": 0,
     "imageUrl": ""
